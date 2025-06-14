@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kuq e Zi - Server FiveM</title>
+<style>
+  /* Reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #120000, #330000);
+  color: #eee;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  /* Mirësevini tekst në vend të logos */
+  .welcome-text {
+    font-size: 2.8rem;
+    color: #d32f2f;
+    letter-spacing: 3px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px #d32f2f;
+  }
+
+  p.subtitle {
+    font-size: 1.2rem;
+    color: #fff;
+    opacity: 0.85;
+    letter-spacing: 1.5px;
+  }
+
+  main {
+  max-width: 650px;
+  text-align: center;
+  background: linear-gradient(145deg, #4b0000, #8b0000);
+  padding: 30px 25px;
+  border-radius: 15px;
+  box-shadow: 0 0 40px rgba(255, 69, 69, 0.8);
+  transition: background-color 0.4s ease;
+}
+
+  .btn-join {
+    margin-top: 30px;
+    background: #d32f2f;
+    color: white;
+    padding: 18px 45px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+    user-select: none;
+  }
+
+  /* Animacion i butonit kur klikoj */
+  .btn-join:active {
+    transform: scale(0.95);
+    background-color: #b22222;
+  }
+
+  .btn-join:hover {
+    background: #b22222;
+  }
+
+  /* Modal për rregullat */
+
+  .modal-bg {
+    position: fixed;
+    top: 0; left: 0; right:0; bottom:0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    z-index: 9999;
+    transition: background-color 0.4s ease;
+  }
+
+  .modal-bg.active {
+    display: flex;
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from {opacity:0}
+    to {opacity:1}
+  }
+
+  .modal-book {
+    background: linear-gradient(145deg, #2e0000, #600000);
+    color: #f0d9b5;
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    border-radius: 20px;
+    box-shadow:
+      0 0 30px #b22222,
+      inset 0 0 15px #4b0000;
+    overflow-y: auto;
+    padding: 30px 40px;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-family: 'Georgia', serif;
+    position: relative;
+    box-sizing: border-box;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  /* Efekt librash: ndarja ne faqe */
+
+  .modal-book h2 {
+    color: #ffb347;
+    margin-bottom: 20px;
+    font-size: 2.2rem;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px #ffb347;
+  }
+
+  .modal-book h3 {
+    color: #ffdab9;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .modal-book ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+  }
+
+  .modal-book ul li {
+    margin-bottom: 12px;
+  }
+
+  /* Butoni mbyll */
+  .btn-close {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    background: transparent;
+    border: none;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ffb347;
+    cursor: pointer;
+    transition: color 0.25s ease;
+  }
+
+  .btn-close:hover {
+    color: #ffdca4;
+  }
+
+  /* Scroll bar stil */
+  .modal-book::-webkit-scrollbar {
+    width: 9px;
+  }
+  .modal-book::-webkit-scrollbar-track {
+    background: #4b0000;
+    border-radius: 10px;
+  }
+  .modal-book::-webkit-scrollbar-thumb {
+    background: #b22222;
+    border-radius: 10px;
+  }
+
+  /* Ngjyra me te lehta kur modal mbyllet */
+  body.modal-closed {
+    background-color: #222;
+    color: #ccc;
+  }
+
+  body.modal-closed main {
+    background-color: #2f2f2f;
+    box-shadow: 0 0 15px rgba(211, 47, 47, 0.5);
+  }
+
+  @media (max-width: 480px) {
+    .welcome-text {
+      font-size: 2rem;
+    }
+    main {
+      padding: 20px;
+    }
+    .modal-book {
+      padding: 25px 20px;
+      font-size: 0.95rem;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="welcome-text">Mirësevini në serverin tonë</div>
+  <p class="subtitle"><strong>Kuq e Zi</strong> - Serveri zyrtar FiveM</p>
+</header>
+
+<main>
+  <p>Miresevini në serverin tonë <strong>Kuq e Zi</strong> për platformën FiveM! Përjetoni lojë autentike dhe komunitet të fortë.</p>
+  <button class="btn-join" id="openRulesBtn">Bashkohu Tani</button>
+</main>
+
+<!-- Modal me rregullat -->
+<div class="modal-bg" id="modalRules" tabindex="-1" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+  <div class="modal-book" role="document">
+    <button class="btn-close" id="closeRulesBtn" aria-label="Mbyll rregullat">&times;</button>
+    <h2 id="modalTitle">Rregullat e Serverit Kuq e Zi</h2>
+
+    <h3>Random Deathmatching (RDM)</h3>
+    <p>Në asnjë moment nuk ju lejohet të vrisni një lojtar pa arsye të mjaftueshme dhe / ose pa inicim.</p>
+
+    <h3>Vehicle Deathmatch (VDM)</h3>
+    <p>Në asnjë moment nuk ju lejohet të përdorni automjetin tuaj si armë, edhe nëse dikush po kërcënon jetën tuaj, ju nuk mund t'i përplasni. Ky rregull nuk zbatohet nëse dikush vrapon në automjetin tuaj, pasi nuk është faji juaj.</p>
+
+    <h3>OOC</h3>
+    <p>Nuk duhet folur jashtë karakterit (p.sh. për jetën reale)</p>
+
+    <h3>Police Baiting</h3>
+    <p>Provokimi i Policisë pa ndonjë arsye të logjikshme me qëllimin e vetëm që të bëni një ndjekje.</p>
+
+    <h3>Lootboxing</h3>
+    <p>Marrja e shumicës së sendeve të një personi pa arsye të RP logjike, guxon ti mirren sendet elementare qe ju duhen per mbijetesen tuaj ne ate rast si p.sh: bandage, armor, ammo etj. Ndryshe nese jeni kon ne gang fight keni drejt dhe armet perndryshe jo.</p>
+
+    <h3>Hitman RP</h3>
+    <p>Ju nuk keni drejtë të paguani dikë apo të merrni para në shkëmbim të vrasjes së dikujt pa qenë të përfshirë në atë rast roleplay.</p>
+
+    <h3>Combat Logging</h3>
+    <p>Largim apo Dalja (QUIT) nga serveri në përpjekje për t'iu shmangur një situate roleplay, vdekje apo arrestimit nga policia.</p>
+
+    <h3>GTA Driving (Vozitje joreale)</h3>
+    <p>Nuk lejohet vozitja jashtë rrugës(në male) me një automjet/motorr apo duke bërë kërcime(stunts) jo reale , ngasje me shpejtësi shum të lartë brenda qytetit etj.</p>
+
+    <h3>Camping</h3>
+    <p>Ju nuk mund të bëni camp në vende të ndryshme. ( Camp = Qëndrimi në një vend për një kohë të gjatë me qëllim të vetëm ti presësh lojtarët e tjerë për ti bërë ROB apo Kidnap).</p>
+
+    <h3>Not Valuing Life (NVL)</h3>
+    <p>Mos marrja parasysh e duhur e jetës suaj kur kryeni një veprim të tillë si: kërcimi nga një çati, ngarja në oqean, ecja / vrapimi në autostradë, dalja nga një automjet në lëvizje, marrja e një devijimi, etj. - Nëse një ose më shumë nga këto veprime të rezultojë në vdekjen tënde mund të dënohesh për NVL.</p>
+
+    <h3>New Life Rule (NLR)</h3>
+    <p>Nëse jeni të paaftë dhe të ringjallur nuk keni pse të harroni se kush ju vrau ose si vdiqët.</p>
+    <p>Nëse nuk e njihni personalisht personin që ju vrau, mos e identifikoni personin në polici me emër, vetëm nga rrobat dhe fytyra.</p>
+    <p>Të gjitha akuzat që mund të zbatohen nëse keni kryer ndonjë krim, përsëri mund të zbatohen.</p>
+
+  </div>
+</div>
+
+<script>
+  const openBtn = document.getElementById('openRulesBtn');
+  const modal = document.getElementById('modalRules');
+  const closeBtn = document.getElementById('closeRulesBtn');
+  const body = document.body;
+
+  openBtn.addEventListener('click', () => {
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    modal.querySelector('.modal-book').focus();
+    body.style.overflow = 'hidden';
+    body.classList.remove('modal-closed');
+  });
+
+  closeBtn.addEventListener('click', () => {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    body.style.overflow = '';
+    body.classList.add('modal-closed');
+    openBtn.focus();
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeBtn.click();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape" && modal.classList.contains('active')) {
+      closeBtn.click();
+    }
+  });
+</script>
+</body>
+</html>
